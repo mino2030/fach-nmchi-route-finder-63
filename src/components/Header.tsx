@@ -76,22 +76,36 @@ const Header = ({ currentView, setCurrentView }: HeaderProps) => {
           </h1>
         </div>
 
-        {isMobile ? (
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                {isOpen ? <X size={20} /> : <Menu size={20} />}
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[240px] flex flex-col gap-2 pt-10">
-              {renderNavLinks()}
-            </SheetContent>
-          </Sheet>
-        ) : (
-          <nav className="flex items-center gap-2">
-            {renderNavLinks()}
+        <div className="flex items-center gap-2">
+          <nav className="flex items-center gap-2 mr-2">
+            {!isMobile && renderNavLinks()}
           </nav>
-        )}
+          
+          <Button variant="outline" size="sm" className="hidden sm:flex">
+            S'inscrire
+          </Button>
+          
+          <Button className="hidden sm:flex bg-fach-purple hover:bg-fach-purple-tertiary" size="sm">
+            Se connecter
+          </Button>
+          
+          {isMobile && (
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  {isOpen ? <X size={20} /> : <Menu size={20} />}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[240px] flex flex-col gap-2 pt-10">
+                {renderNavLinks()}
+                <div className="flex flex-col gap-2 mt-4">
+                  <Button variant="outline">S'inscrire</Button>
+                  <Button className="bg-fach-purple hover:bg-fach-purple-tertiary">Se connecter</Button>
+                </div>
+              </SheetContent>
+            </Sheet>
+          )}
+        </div>
       </div>
     </header>
   );
