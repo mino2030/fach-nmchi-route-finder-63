@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Bus, Tram, Route, Clock, Flag } from 'lucide-react';
+import { Bus, Route, Clock, Flag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface RouteOption {
@@ -66,7 +65,7 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ origin, destination }) => {
       case 'bus':
         return <Bus size={16} />;
       case 'tram':
-        return <Tram size={16} />;
+        return <Route size={16} className="text-green-600" />;
       case 'taxi':
         return <Route size={16} />;
       case 'walk':
