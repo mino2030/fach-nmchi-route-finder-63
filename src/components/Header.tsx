@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { MapPin, MessageCircle, User, Menu, X } from 'lucide-react';
+import { MapPin, MessageCircle, User, Menu, X, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -24,7 +24,7 @@ const NavLink = ({ icon, text, active, onClick }: NavLinkProps) => (
   </Button>
 );
 
-type View = 'map' | 'community' | 'profile';
+type View = 'map' | 'community' | 'profile' | 'messages';
 
 interface HeaderProps {
   currentView: View;
@@ -52,6 +52,15 @@ const Header = ({ currentView, setCurrentView }: HeaderProps) => {
         active={currentView === 'community'}
         onClick={() => {
           setCurrentView('community');
+          setIsOpen(false);
+        }} 
+      />
+      <NavLink 
+        icon={<MessageSquare size={18} />} 
+        text="Messages" 
+        active={currentView === 'messages'}
+        onClick={() => {
+          setCurrentView('messages');
           setIsOpen(false);
         }} 
       />

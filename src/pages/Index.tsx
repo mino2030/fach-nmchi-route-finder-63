@@ -5,10 +5,11 @@ import Footer from "@/components/Footer";
 import MapView from "@/components/MapView";
 import CommunityView from "@/components/CommunityView";
 import ProfileView from "@/components/ProfileView";
+import MessagesView from "@/components/MessagesView";
 import NewsAndAlerts from "@/components/NewsAndAlerts";
 import { Button } from "@/components/ui/button";
 
-type View = 'map' | 'community' | 'profile';
+type View = 'map' | 'community' | 'profile' | 'messages';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('map');
@@ -33,6 +34,7 @@ const Index = () => {
         {currentView === 'map' && <MapView />}
         {currentView === 'community' && <CommunityView />}
         {currentView === 'profile' && <ProfileView />}
+        {currentView === 'messages' && <MessagesView />}
       </main>
       
       <div className="container mx-auto px-4 py-4 flex justify-center sm:justify-between flex-wrap items-center gap-4 border-t">
