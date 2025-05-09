@@ -1,11 +1,12 @@
 
 import { useState } from 'react';
-import { MessageCircle, Search, User, Send } from 'lucide-react';
+import { MessageCircle, Search, User, Send, Route, Share } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from "@/hooks/use-toast";
 
 interface Message {
   id: string;
@@ -14,6 +15,11 @@ interface Message {
   senderAvatar?: string;
   time: string;
   isMe: boolean;
+  itinerary?: {
+    origin: string;
+    destination: string;
+    routeId?: string;
+  };
 }
 
 interface Conversation {
@@ -97,6 +103,18 @@ const MessagesView = () => {
         time: '15:25',
         isMe: false,
       },
+      {
+        id: '2-3',
+        content: 'Voici un itinéraire depuis Casa Voyageurs',
+        sender: 'Moi',
+        time: '15:30',
+        isMe: true,
+        itinerary: {
+          origin: 'Casa Voyageurs',
+          destination: 'Maarif',
+          routeId: '1'
+        }
+      },
     ],
     '3': [
       {
@@ -106,12 +124,64 @@ const MessagesView = () => {
         time: 'Lun 14:05',
         isMe: false,
       },
+      {
+        id: '3-2',
+        content: 'Voici un autre itinéraire que tu peux prendre:',
+        sender: 'Moi',
+        time: 'Lun 14:10',
+        isMe: true,
+        itinerary: {
+          origin: 'Ain Diab',
+          destination: 'Centre Ville',
+          routeId: '4'
+        }
+      },
     ],
   };
 
   const filteredConversations = searchQuery
     ? conversations.filter(conv => conv.user.toLowerCase().includes(searchQuery.toLowerCase()))
     : conversations;
+
+  const handleShareItinerary = (msg: Message) => {
+    if (!msg.itinerary) return;
+    
+    const { origin, destination, routeId } = msg.itinerary;
+    let shareableLink = `${window.location.origin}/itinerary?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`;
+    
+    if (routeId) {
+      shareableLink += `&routeId=${routeId}`;
+    }
+    
+    // Try to use Web Share API if available
+    if (navigator.share) {
+      navigator.share({
+        title: `Itinéraire de ${origin} à ${destination}`,
+        text: `Consultez cet itinéraire de ${origin} à ${destination}`,
+        url: shareableLink,
+      }).catch(() => {
+        // Fallback to clipboard
+        copyToClipboard(shareableLink);
+      });
+    } else {
+      // Fallback to clipboard
+      copyToClipboard(shareableLink);
+    }
+  };
+  
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast({
+        title: "Lien copié",
+        description: "L'itinéraire a été copié dans votre presse-papiers",
+      });
+    }).catch(() => {
+      toast({
+        title: "Erreur",
+        description: "Impossible de copier l'itinéraire",
+      });
+    });
+  };
 
   const handleSendMessage = () => {
     if (!inputMessage.trim() || !activeChat) return;
@@ -196,6 +266,31 @@ const MessagesView = () => {
                 }`}
               >
                 <div className="text-sm">{message.content}</div>
+                
+                {message.itinerary && (
+                  <div className={`mt-2 p-2 rounded flex flex-col gap-1 ${
+                    message.isMe ? 'bg-fach-purple-tertiary' : 'bg-white/50'
+                  }`}>
+                    <div className="text-xs font-medium flex items-center gap-1">
+                      <Route size={12} /> Itinéraire partagé:
+                    </div>
+                    <div className="text-xs">
+                      De: {message.itinerary.origin}
+                    </div>
+                    <div className="text-xs">
+                      À: {message.itinerary.destination}
+                    </div>
+                    <Button
+                      size="sm"
+                      variant={message.isMe ? "secondary" : "outline"}
+                      className="mt-1 text-xs py-0.5 h-6"
+                      onClick={() => handleShareItinerary(message)}
+                    >
+                      <Share size={12} className="mr-1" /> Partager
+                    </Button>
+                  </div>
+                )}
+                
                 <div className={`text-xs ${message.isMe ? 'text-white/70' : 'text-muted-foreground'} text-right mt-1`}>
                   {message.time}
                 </div>

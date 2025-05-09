@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Search, Bus, MapPin, Route, AlertTriangle } from 'lucide-react';
+import { Search, Bus, MapPin, Route, AlertTriangle, Share } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { toast } from "@/hooks/use-toast";
 
 import RoutePlanner from './RoutePlanner';
 import AlertsList from './AlertsList';
@@ -40,6 +41,38 @@ const MapView = () => {
     setOrigin('');
     setDestination('');
     setShowRoutePlanner(false);
+  };
+
+  const handleShareRoute = () => {
+    if (!origin || !destination) return;
+    
+    // Create a shareable link
+    const shareableLink = `${window.location.origin}/route?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`;
+    
+    // Try to use Web Share API if available
+    if (navigator.share) {
+      navigator.share({
+        title: `Itinéraire de ${origin} à ${destination}`,
+        text: `Consultez cet itinéraire de ${origin} à ${destination}`,
+        url: shareableLink,
+      }).catch(() => {
+        // Fallback to clipboard
+        navigator.clipboard.writeText(shareableLink).then(() => {
+          toast({
+            title: "Lien copié",
+            description: "L'itinéraire a été copié dans votre presse-papiers"
+          });
+        });
+      });
+    } else {
+      // Fallback to clipboard
+      navigator.clipboard.writeText(shareableLink).then(() => {
+        toast({
+          title: "Lien copié",
+          description: "L'itinéraire a été copié dans votre presse-papiers"
+        });
+      });
+    }
   };
 
   return (
@@ -96,6 +129,15 @@ const MapView = () => {
               >
                 <AlertTriangle size={18} className="text-amber-500" />
               </Button>
+              {origin && destination && (
+                <Button 
+                  variant="outline" 
+                  onClick={handleShareRoute}
+                  title="Partager cet itinéraire"
+                >
+                  <Share size={18} className="text-fach-purple" />
+                </Button>
+              )}
             </div>
           </div>
         </Card>
@@ -104,9 +146,20 @@ const MapView = () => {
           <Card className="p-4 w-full shadow-lg">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-medium">Options de trajet</h3>
-              <Button variant="ghost" size="sm" onClick={resetSearch}>
-                Fermer
-              </Button>
+              <div className="flex gap-2 items-center">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={handleShareRoute}
+                  title="Partager cet itinéraire"
+                  className="h-8 w-8"
+                >
+                  <Share size={16} className="text-fach-purple" />
+                </Button>
+                <Button variant="ghost" size="sm" onClick={resetSearch}>
+                  Fermer
+                </Button>
+              </div>
             </div>
             <RoutePlanner 
               origin={origin} 

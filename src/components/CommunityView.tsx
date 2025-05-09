@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { MessageCircle, MapPin, Search, User, Share, Pin, Flag, Clock } from 'lucide-react';
+import { MessageCircle, MapPin, Search, User, Share, Pin, Flag, Clock, Route } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -25,6 +24,11 @@ interface Post {
   likes: number;
   isLiked?: boolean;
   isShared?: boolean;
+  itinerary?: {
+    origin: string;
+    destination: string;
+    routeId?: string;
+  };
 }
 
 const CommunityView = () => {
@@ -44,6 +48,10 @@ const CommunityView = () => {
       tags: ['université', 'travaux'],
       isPinned: false,
       likes: 5,
+      itinerary: {
+        origin: "Sidi Bernoussi",
+        destination: "Université Hassan II"
+      }
     },
     {
       id: '2',
@@ -57,6 +65,10 @@ const CommunityView = () => {
       tags: ['mall', 'transport'],
       isPinned: false,
       likes: 12,
+      itinerary: {
+        origin: "Casa Port",
+        destination: "Morocco Mall"
+      }
     },
     {
       id: '3',
@@ -117,12 +129,54 @@ const CommunityView = () => {
   };
 
   const handleSharePost = (postId: string) => {
-    // In a real app, this would open a share dialog or generate a link
-    toast({
-      title: "Post partagé",
-      description: "Le lien a été copié dans votre presse-papiers.",
-    });
+    // Find the post to share
+    const postToShare = posts.find(post => post.id === postId);
     
+    // If the post has an itinerary, create a shareable link
+    if (postToShare?.itinerary) {
+      const { origin, destination, routeId } = postToShare.itinerary;
+      let shareableLink = `${window.location.origin}/itinerary?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`;
+      
+      // If there's a specific routeId, add it to the link
+      if (routeId) {
+        shareableLink += `&routeId=${routeId}`;
+      }
+      
+      // Try to use Web Share API if available
+      if (navigator.share) {
+        navigator.share({
+          title: `Itinéraire de ${origin} à ${destination}`,
+          text: postToShare.question,
+          url: shareableLink,
+        }).catch(() => {
+          // Fallback to clipboard
+          copyToClipboard(shareableLink);
+        });
+      } else {
+        // Fallback to clipboard
+        copyToClipboard(shareableLink);
+      }
+    } else {
+      // Share just the post without itinerary
+      const shareableLink = `${window.location.origin}/community/post/${postId}`;
+      
+      // Try to use Web Share API if available
+      if (navigator.share) {
+        navigator.share({
+          title: "Publication partagée",
+          text: postToShare?.question || "Découvrez cette publication sur Fach Nmchi",
+          url: shareableLink,
+        }).catch(() => {
+          // Fallback to clipboard
+          copyToClipboard(shareableLink);
+        });
+      } else {
+        // Fallback to clipboard
+        copyToClipboard(shareableLink);
+      }
+    }
+    
+    // Update post state to indicate it's been shared
     setPosts(posts.map(post => {
       if (post.id === postId) {
         return {
@@ -132,6 +186,20 @@ const CommunityView = () => {
       }
       return post;
     }));
+  };
+  
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast({
+        title: "Post partagé",
+        description: "Le lien a été copié dans votre presse-papiers.",
+      });
+    }).catch(() => {
+      toast({
+        title: "Erreur",
+        description: "Impossible de copier le lien dans votre presse-papiers.",
+      });
+    });
   };
 
   const handlePinPost = (postId: string) => {
@@ -238,6 +306,13 @@ const CommunityView = () => {
           </div>
         )}
         
+        {post.itinerary && (
+          <div className="flex items-center gap-1 text-sm text-fach-blue mt-1">
+            <Route size={14} />
+            <span>Itinéraire: {post.itinerary.origin} → {post.itinerary.destination}</span>
+          </div>
+        )}
+        
         <div className="flex flex-wrap gap-2">
           {post.tags && post.tags.map(tag => (
             <span key={tag} className="bg-muted px-2 py-0.5 rounded-full text-xs">
@@ -274,7 +349,7 @@ const CommunityView = () => {
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Partager l'itinéraire</p>
+                  <p>{post.itinerary ? "Partager l'itinéraire" : "Partager la publication"}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

@@ -1,15 +1,17 @@
+
 import React from 'react';
-import { Bus, Route, Clock, Flag } from 'lucide-react';
+import { Bus, Route, Clock, Flag, Share as ShareIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from "@/hooks/use-toast";
 
 interface RouteOption {
   id: string;
-  mode: 'bus' | 'tram' | 'walk' | 'taxi';
+  mode: 'bus' | 'tram' | 'smallTaxi' | 'bigTaxi' | 'walk';
   duration: number;
   price: string;
   line?: string;
   steps: {
-    type: 'bus' | 'tram' | 'walk' | 'taxi';
+    type: 'bus' | 'tram' | 'smallTaxi' | 'bigTaxi' | 'walk';
     description: string;
     duration: number;
     line?: string;
@@ -28,7 +30,7 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ origin, destination }) => {
       id: '1',
       mode: 'bus',
       duration: 26,
-      price: '7 DH',
+      price: '5 DH',
       line: 'B22',
       steps: [
         { type: 'walk', description: 'Marcher vers arrêt Casa Voyageurs', duration: 5 },
@@ -50,24 +52,73 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ origin, destination }) => {
     },
     {
       id: '3',
-      mode: 'taxi',
+      mode: 'smallTaxi',
       duration: 15,
       price: '25-30 DH',
       steps: [
-        { type: 'taxi', description: 'Taxi direct', duration: 15 },
+        { type: 'smallTaxi', description: 'Petit Taxi direct', duration: 15 },
+      ],
+    },
+    {
+      id: '4',
+      mode: 'bigTaxi',
+      duration: 20,
+      price: '10 DH',
+      line: 'Casa-Ain Diab',
+      steps: [
+        { type: 'walk', description: 'Marcher vers station de Grand Taxi', duration: 5 },
+        { type: 'bigTaxi', description: 'Grand Taxi → Ain Diab', duration: 12, line: 'Casa-Ain Diab' },
+        { type: 'walk', description: 'Marcher vers destination', duration: 3 },
       ],
     },
   ];
 
+  // Function to share itinerary
+  const handleShare = (routeId: string) => {
+    // In a real app, this would generate a unique shareable link
+    const shareableLink = `${window.location.origin}/itinerary/${routeId}?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`;
+    
+    // Try to use the Web Share API if available
+    if (navigator.share) {
+      navigator.share({
+        title: `Itinéraire de ${origin} à ${destination}`,
+        text: `Voici un itinéraire de ${origin} à ${destination}`,
+        url: shareableLink,
+      }).catch(() => {
+        // Fallback to clipboard
+        copyToClipboard(shareableLink);
+      });
+    } else {
+      // Fallback to clipboard
+      copyToClipboard(shareableLink);
+    }
+  };
+  
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast({
+        title: "Lien copié",
+        description: "L'itinéraire a été copié dans votre presse-papiers"
+      });
+    }).catch(() => {
+      toast({
+        title: "Erreur",
+        description: "Impossible de copier l'itinéraire"
+      });
+    });
+  };
+
   // Function to render appropriate icon
-  const getIcon = (type: 'bus' | 'tram' | 'walk' | 'taxi') => {
+  const getIcon = (type: 'bus' | 'tram' | 'smallTaxi' | 'bigTaxi' | 'walk') => {
     switch (type) {
       case 'bus':
         return <Bus size={16} />;
       case 'tram':
         return <Route size={16} className="text-green-600" />;
-      case 'taxi':
-        return <Route size={16} />;
+      case 'smallTaxi':
+        return <Route size={16} className="text-yellow-600" />;
+      case 'bigTaxi':
+        return <Route size={16} className="text-orange-600" />;
       case 'walk':
         return <Route size={16} />;
       default:
@@ -75,14 +126,16 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ origin, destination }) => {
     }
   };
 
-  const getBgColor = (type: 'bus' | 'tram' | 'walk' | 'taxi') => {
+  const getBgColor = (type: 'bus' | 'tram' | 'smallTaxi' | 'bigTaxi' | 'walk') => {
     switch (type) {
       case 'bus':
         return 'bg-blue-100 text-blue-600';
       case 'tram':
         return 'bg-green-100 text-green-600';
-      case 'taxi':
+      case 'smallTaxi':
         return 'bg-yellow-100 text-yellow-600';
+      case 'bigTaxi':
+        return 'bg-orange-100 text-orange-600';
       case 'walk':
         return 'bg-gray-100 text-gray-600';
       default:
@@ -103,7 +156,8 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ origin, destination }) => {
                 <span className="font-medium">
                   {route.mode === 'bus' && `Bus ${route.line}`}
                   {route.mode === 'tram' && `Tram ${route.line}`}
-                  {route.mode === 'taxi' && 'Taxi'}
+                  {route.mode === 'smallTaxi' && 'Petit Taxi'}
+                  {route.mode === 'bigTaxi' && `Grand Taxi ${route.line}`}
                 </span>
                 <div className="text-xs text-muted-foreground">
                   {route.steps.length} étape{route.steps.length > 1 ? 's' : ''}
@@ -140,6 +194,14 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ origin, destination }) => {
             </Button>
             <Button size="sm" variant="outline">
               Détails
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline"
+              className="hover:bg-muted"
+              onClick={() => handleShare(route.id)}
+            >
+              <ShareIcon size={16} className="text-fach-purple" />
             </Button>
           </div>
         </div>
