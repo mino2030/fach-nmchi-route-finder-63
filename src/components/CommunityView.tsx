@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from '@/components/ui/sonner';
 import PostQuestion from './PostQuestion';
 import CommunitySearch from './community/CommunitySearch';
 import PostList from './community/PostList';
@@ -14,7 +14,6 @@ import { mockPosts } from '@/data/posts';
 const CommunityView = () => {
   const [openPostDialog, setOpenPostDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { toast } = useToast();
   const [posts, setPosts] = useState<Post[]>(mockPosts);
 
   const handleLikePost = (postId: string) => {
@@ -49,11 +48,11 @@ const CommunityView = () => {
         url: shareableLink,
       }).catch(() => {
         // Fallback to clipboard
-        copyToClipboard(shareableLink, { toast });
+        copyToClipboard(shareableLink);
       });
     } else {
       // Fallback to clipboard
-      copyToClipboard(shareableLink, { toast });
+      copyToClipboard(shareableLink);
     }
     
     // Update post state to indicate it's been shared

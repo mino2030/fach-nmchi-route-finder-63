@@ -1,6 +1,5 @@
-
 import { Post } from '@/types/community';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from "@/components/ui/sonner";
 
 export const sortPosts = (postsToSort: Post[]) => {
   // Sort by pinned first, then by time
@@ -38,14 +37,15 @@ export const sharePost = (post: Post): string => {
   }
 };
 
-export const copyToClipboard = (text: string, toast: ReturnType<typeof useToast>) => {
+// Modified to use direct toast import instead of passing useToast() return value
+export const copyToClipboard = (text: string, options: { toast?: any } = {}) => {
   navigator.clipboard.writeText(text).then(() => {
-    toast.toast({
+    toast({
       title: "Post partagé",
       description: "Le lien a été copié dans votre presse-papiers.",
     });
   }).catch(() => {
-    toast.toast({
+    toast({
       title: "Erreur",
       description: "Impossible de copier le lien dans votre presse-papiers.",
     });
