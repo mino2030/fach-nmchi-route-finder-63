@@ -1,0 +1,53 @@
+
+import { Post } from '@/types/community';
+import { useToast } from '@/hooks/use-toast';
+
+export const sortPosts = (postsToSort: Post[]) => {
+  // Sort by pinned first, then by time
+  return [...postsToSort].sort((a, b) => {
+    if (a.isPinned && !b.isPinned) return -1;
+    if (!a.isPinned && b.isPinned) return 1;
+    
+    // Then sort by most recent
+    const timeA = a.time.toLowerCase();
+    const timeB = b.time.toLowerCase();
+    if (timeA.includes('min') && !timeB.includes('min')) return -1;
+    if (!timeA.includes('min') && timeB.includes('min')) return 1;
+    if (timeA.includes('h') && !timeB.includes('h') && !timeB.includes('min')) return -1;
+    if (!timeA.includes('h') && !timeA.includes('min') && timeB.includes('h')) return 1;
+    
+    return 0;
+  });
+};
+
+export const sharePost = (post: Post): string => {
+  // If the post has an itinerary, create a shareable link
+  if (post?.itinerary) {
+    const { origin, destination, routeId } = post.itinerary;
+    let shareableLink = `${window.location.origin}/itinerary?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`;
+    
+    // If there's a specific routeId, add it to the link
+    if (routeId) {
+      shareableLink += `&routeId=${routeId}`;
+    }
+    
+    return shareableLink;
+  } else {
+    // Share just the post without itinerary
+    return `${window.location.origin}/community/post/${post.id}`;
+  }
+};
+
+export const copyToClipboard = (text: string, toast: ReturnType<typeof useToast>) => {
+  navigator.clipboard.writeText(text).then(() => {
+    toast.toast({
+      title: "Post partagé",
+      description: "Le lien a été copié dans votre presse-papiers.",
+    });
+  }).catch(() => {
+    toast.toast({
+      title: "Erreur",
+      description: "Impossible de copier le lien dans votre presse-papiers.",
+    });
+  });
+};
