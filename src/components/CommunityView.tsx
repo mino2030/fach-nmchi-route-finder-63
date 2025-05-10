@@ -72,13 +72,9 @@ const CommunityView = () => {
     const postToBePinned = posts.find(post => post.id === postId);
     
     if (postToBePinned?.isPinned) {
-      toast({
-        description: "Le post n'est plus épinglé.",
-      });
+      toast("Le post n'est plus épinglé.");
     } else {
-      toast({
-        description: "Le post sera épinglé pendant 10 minutes.",
-      });
+      toast("Le post sera épinglé pendant 10 minutes.");
     }
     
     setPosts(posts.map(post => {

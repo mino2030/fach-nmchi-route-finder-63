@@ -41,12 +41,8 @@ export const sharePost = (post: Post): string => {
 // Modified to use direct toast import instead of passing useToast() return value
 export const copyToClipboard = (text: string, options: { toast?: any } = {}) => {
   navigator.clipboard.writeText(text).then(() => {
-    toast({
-      description: "Le lien a été copié dans votre presse-papiers.",
-    });
+    toast("Le lien a été copié dans votre presse-papiers.");
   }).catch(() => {
-    toast({
-      description: "Impossible de copier le lien dans votre presse-papiers.",
-    });
+    toast("Impossible de copier le lien dans votre presse-papiers.");
   });
 };
