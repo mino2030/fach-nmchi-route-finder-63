@@ -73,12 +73,10 @@ const CommunityView = () => {
     
     if (postToBePinned?.isPinned) {
       toast({
-        title: "Post désépinglé",
         description: "Le post n'est plus épinglé.",
       });
     } else {
       toast({
-        title: "Post épinglé",
         description: "Le post sera épinglé pendant 10 minutes.",
       });
     }
@@ -115,42 +113,59 @@ const CommunityView = () => {
     : popularPosts;
 
   return (
-    <div className="container py-4 max-w-3xl mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">Communauté</h2>
+    <div className="container py-4 max-w-3xl mx-auto relative z-10">
+      <div className="absolute -z-10 top-0 left-0 right-0 h-64 bg-gradient-to-br from-fach-purple/30 to-fach-blue/30 blur-3xl opacity-70 animate-pulse-slow rounded-full"></div>
+      
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-fach-purple to-fach-blue-ocean">Communauté</h2>
         <Button 
           onClick={() => setOpenPostDialog(true)}
-          className="bg-fach-purple hover:bg-fach-purple-tertiary"
+          className="bg-fach-purple hover:bg-fach-purple-tertiary transition-all duration-300 hover:scale-105 shadow-lg shadow-fach-purple/20"
         >
-          <MessageCircle size={18} className="mr-2" /> Poser une question
+          <MessageCircle size={18} className="mr-2 animate-pulse-slow" /> Poser une question
         </Button>
       </div>
 
       <CommunitySearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       <Tabs defaultValue="recent" className="mb-6">
-        <TabsList className="mb-2">
-          <TabsTrigger value="recent">Récent</TabsTrigger>
-          <TabsTrigger value="popular">Populaire</TabsTrigger>
+        <TabsList className="mb-4 bg-gradient-to-r from-fach-purple/20 to-fach-blue/20 shadow-md">
+          <TabsTrigger 
+            value="recent" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-fach-purple data-[state=active]:to-fach-purple-tertiary data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-md"
+          >
+            Récent
+          </TabsTrigger>
+          <TabsTrigger 
+            value="popular"
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-fach-blue data-[state=active]:to-fach-blue-ocean data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-md"
+          >
+            Populaire
+          </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="recent">
-          <PostList 
-            posts={filteredRecentPosts} 
-            onLikePost={handleLikePost} 
-            onSharePost={handleSharePost} 
-            onPinPost={handlePinPost} 
-          />
-        </TabsContent>
-        
-        <TabsContent value="popular">
-          <PostList 
-            posts={filteredPopularPosts} 
-            onLikePost={handleLikePost} 
-            onSharePost={handleSharePost} 
-            onPinPost={handlePinPost} 
-          />
-        </TabsContent>
+        <div className="relative">
+          <div className="absolute -z-10 top-20 right-10 w-32 h-32 bg-fach-blue/10 rounded-full blur-2xl"></div>
+          <div className="absolute -z-10 bottom-10 left-10 w-40 h-40 bg-fach-purple/10 rounded-full blur-2xl"></div>
+          
+          <TabsContent value="recent" className="animate-fade-in">
+            <PostList 
+              posts={filteredRecentPosts} 
+              onLikePost={handleLikePost} 
+              onSharePost={handleSharePost} 
+              onPinPost={handlePinPost} 
+            />
+          </TabsContent>
+          
+          <TabsContent value="popular" className="animate-fade-in">
+            <PostList 
+              posts={filteredPopularPosts} 
+              onLikePost={handleLikePost} 
+              onSharePost={handleSharePost} 
+              onPinPost={handlePinPost} 
+            />
+          </TabsContent>
+        </div>
       </Tabs>
       
       <PostQuestion open={openPostDialog} onOpenChange={setOpenPostDialog} />

@@ -1,3 +1,4 @@
+
 import { Post } from '@/types/community';
 import { toast } from "@/components/ui/sonner";
 
@@ -41,12 +42,10 @@ export const sharePost = (post: Post): string => {
 export const copyToClipboard = (text: string, options: { toast?: any } = {}) => {
   navigator.clipboard.writeText(text).then(() => {
     toast({
-      title: "Post partagé",
       description: "Le lien a été copié dans votre presse-papiers.",
     });
   }).catch(() => {
     toast({
-      title: "Erreur",
       description: "Impossible de copier le lien dans votre presse-papiers.",
     });
   });
