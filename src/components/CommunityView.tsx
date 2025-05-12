@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Images, Paintbrush } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/components/ui/sonner';
@@ -109,40 +109,53 @@ const CommunityView = () => {
     : popularPosts;
 
   return (
-    <div className="container py-4 max-w-3xl mx-auto relative z-10">
-      <div className="absolute -z-10 top-0 left-0 right-0 h-64 bg-gradient-to-br from-fach-purple/30 to-fach-blue/30 blur-3xl opacity-70 animate-pulse-slow rounded-full"></div>
+    <div className="container py-6 max-w-3xl mx-auto relative z-10">
+      {/* Enhanced decorative background elements */}
+      <div className="absolute -z-10 top-0 left-0 right-0 h-64 bg-gradient-to-br from-fach-purple/40 to-fach-blue/40 blur-3xl opacity-80 animate-pulse-slow rounded-full"></div>
+      <div className="absolute -z-10 top-40 -right-20 w-64 h-64 rounded-full bg-gradient-to-br from-fach-purple-light/30 to-fach-blue-soft/30 blur-3xl animate-float"></div>
+      <div className="absolute -z-10 bottom-20 -left-20 w-72 h-72 rounded-full bg-gradient-to-tl from-fach-blue-bright/20 to-fach-purple-vivid/20 blur-3xl animate-float"></div>
       
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-fach-purple to-fach-blue-ocean">Communauté</h2>
-        <Button 
-          onClick={() => setOpenPostDialog(true)}
-          className="bg-fach-purple hover:bg-fach-purple-tertiary transition-all duration-300 hover:scale-105 shadow-lg shadow-fach-purple/20"
-        >
-          <MessageCircle size={18} className="mr-2 animate-pulse-slow" /> Poser une question
-        </Button>
+      {/* Illustration elements */}
+      <div className="absolute -z-10 top-40 right-4 opacity-10 rotate-12">
+        <Images className="w-24 h-24 text-fach-purple-vivid" />
+      </div>
+      <div className="absolute -z-10 bottom-20 left-4 opacity-10 -rotate-12">
+        <Paintbrush className="w-20 h-20 text-fach-blue-ocean" />
+      </div>
+      
+      <div className="glass-effect p-6 rounded-2xl mb-8 shadow-lg shadow-fach-purple/10">
+        <div className="flex justify-between items-center">
+          <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-fach-purple-vivid to-fach-blue-ocean animate-fade-in">Communauté</h2>
+          <Button 
+            onClick={() => setOpenPostDialog(true)}
+            className="bg-gradient-to-r from-fach-purple to-fach-purple-tertiary hover:from-fach-purple-vivid hover:to-fach-purple-secondary transition-all duration-300 hover:scale-105 shadow-lg shadow-fach-purple/20"
+          >
+            <MessageCircle size={18} className="mr-2 animate-pulse-slow" /> Poser une question
+          </Button>
+        </div>
+
+        <CommunitySearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       </div>
 
-      <CommunitySearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-
       <Tabs defaultValue="recent" className="mb-6">
-        <TabsList className="mb-4 bg-gradient-to-r from-fach-purple/20 to-fach-blue/20 shadow-md">
+        <TabsList className="mb-6 bg-gradient-to-r from-fach-purple/20 to-fach-blue/20 shadow-md rounded-xl p-1 w-full">
           <TabsTrigger 
             value="recent" 
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-fach-purple data-[state=active]:to-fach-purple-tertiary data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-md"
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-fach-purple data-[state=active]:to-fach-purple-tertiary data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-lg rounded-lg py-3 flex-1"
           >
             Récent
           </TabsTrigger>
           <TabsTrigger 
             value="popular"
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-fach-blue data-[state=active]:to-fach-blue-ocean data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-md"
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-fach-blue data-[state=active]:to-fach-blue-ocean data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-lg rounded-lg py-3 flex-1"
           >
             Populaire
           </TabsTrigger>
         </TabsList>
         
         <div className="relative">
-          <div className="absolute -z-10 top-20 right-10 w-32 h-32 bg-fach-blue/10 rounded-full blur-2xl"></div>
-          <div className="absolute -z-10 bottom-10 left-10 w-40 h-40 bg-fach-purple/10 rounded-full blur-2xl"></div>
+          <div className="absolute -z-10 top-20 right-10 w-32 h-32 bg-fach-blue/10 rounded-full blur-2xl animate-float"></div>
+          <div className="absolute -z-10 bottom-10 left-10 w-40 h-40 bg-fach-purple/10 rounded-full blur-2xl animate-pulse-slow"></div>
           
           <TabsContent value="recent" className="animate-fade-in">
             <PostList 
