@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Route, Clock } from 'lucide-react';
+import { Route, Clock, Bus } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Station {
   id: string;
@@ -65,45 +66,127 @@ const TransitMap: React.FC<TransitMapProps> = ({ mapType = 'all' }) => {
 
   return (
     <div className="relative bg-white dark:bg-card rounded-xl overflow-hidden shadow-md h-[400px] w-full">
-      {/* Map Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-fach-blue-soft/5 to-fach-purple-light/5 bg-opacity-30">
-        {/* Transit Lines */}
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-          {/* Tram Line */}
-          <path 
-            d="M20,20 Q40,50 75,30" 
-            stroke="#4CAF50" 
-            strokeWidth="1.5" 
-            fill="none" 
-            strokeDasharray="2,1" 
-          />
-          {/* Train Line */}
-          <path 
-            d="M20,20 Q30,40 35,40" 
-            stroke="#2196F3" 
-            strokeWidth="1.5" 
-            fill="none" 
-            strokeDasharray="2,1" 
-          />
-        </svg>
+      <Tabs defaultValue="map">
+        <TabsList className="w-full bg-muted/80 mb-2">
+          <TabsTrigger value="map">Map</TabsTrigger>
+          <TabsTrigger value="bus">Bus</TabsTrigger>
+          <TabsTrigger value="tram">Tram</TabsTrigger>
+          <TabsTrigger value="taxi">Taxi</TabsTrigger>
+        </TabsList>
 
-        {/* Stations */}
-        {filteredStations.map(station => (
-          <button
-            key={station.id}
-            className={`absolute transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full 
-            ${station.type === 'tram' ? 'bg-green-500' : 'bg-blue-500'} 
-            hover:scale-150 transition-all duration-200 cursor-pointer z-10
-            ${selectedStation?.id === station.id ? 'ring-4 ring-offset-2 ring-fach-purple/30' : ''}`}
-            style={{ 
-              left: `${station.position.x}%`, 
-              top: `${station.position.y}%` 
-            }}
-            onClick={() => setSelectedStation(station)}
-            title={station.name}
-          />
-        ))}
-      </div>
+        <TabsContent value="map">
+          {/* Map Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-fach-blue-soft/5 to-fach-purple-light/5 bg-opacity-30">
+            {/* Transit Lines */}
+            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+              {/* Tram Line */}
+              <path 
+                d="M20,20 Q40,50 75,30" 
+                stroke="#4CAF50" 
+                strokeWidth="1.5" 
+                fill="none" 
+                strokeDasharray="2,1" 
+              />
+              {/* Train Line */}
+              <path 
+                d="M20,20 Q30,40 35,40" 
+                stroke="#2196F3" 
+                strokeWidth="1.5" 
+                fill="none" 
+                strokeDasharray="2,1" 
+              />
+            </svg>
+
+            {/* Stations */}
+            {filteredStations.map(station => (
+              <button
+                key={station.id}
+                className={`absolute transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full 
+                ${station.type === 'tram' ? 'bg-green-500' : 'bg-blue-500'} 
+                hover:scale-150 transition-all duration-200 cursor-pointer z-10
+                ${selectedStation?.id === station.id ? 'ring-4 ring-offset-2 ring-fach-purple/30' : ''}`}
+                style={{ 
+                  left: `${station.position.x}%`, 
+                  top: `${station.position.y}%` 
+                }}
+                onClick={() => setSelectedStation(station)}
+                title={station.name}
+              />
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="bus">
+          <div className="p-4">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+              <Bus size={20} className="text-blue-500" /> Bus Routes
+            </h3>
+            <div className="space-y-3">
+              {[1, 2, 3].map(idx => (
+                <div key={idx} className="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <div>
+                    <div className="font-medium">Bus B{idx * 10}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {idx === 1 ? 'Casa Voyageurs → Maarif' : 
+                       idx === 2 ? 'Aïn Diab → Casa Port' : 'Sidi Moumen → Derb Sultan'}
+                    </div>
+                  </div>
+                  <div className="text-blue-500 font-semibold">10 min</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="tram">
+          <div className="p-4">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+              <Route size={20} className="text-green-500" /> Tram Routes
+            </h3>
+            <div className="space-y-3">
+              {[1, 2].map(idx => (
+                <div key={idx} className="flex justify-between items-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                  <div>
+                    <div className="font-medium">Tram T{idx}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {idx === 1 ? 'Facultés → Sidi Moumen' : 'Ain Diab → Sidi Bernoussi'}
+                    </div>
+                  </div>
+                  <div className="text-green-500 font-semibold">{idx * 5} min</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="taxi">
+          <div className="p-4">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+              <Route size={20} className="text-yellow-500" /> Taxi Services
+            </h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                <div>
+                  <div className="font-medium">Petit Taxi</div>
+                  <div className="text-sm text-muted-foreground">
+                    Service direct
+                  </div>
+                </div>
+                <div className="text-yellow-500 font-semibold">Disponible</div>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                <div>
+                  <div className="font-medium">Grand Taxi</div>
+                  <div className="text-sm text-muted-foreground">
+                    Casa-Mohammedia
+                  </div>
+                </div>
+                <div className="text-orange-500 font-semibold">5 min</div>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Station Info Card */}
       {selectedStation && (
