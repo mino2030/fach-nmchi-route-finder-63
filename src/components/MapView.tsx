@@ -239,20 +239,20 @@ const MapView = () => {
             </Card>
           )}
         </div>
-      </Tabs>
 
-      <TabsContent value="map" className="p-0 m-0 h-full">
-        <MapPlaceholder />
-      </TabsContent>
-      
-      <TabsContent value="transit" className="p-0 m-0 h-full">
-        <div className="bg-gradient-to-br from-fach-purple-light/10 to-fach-blue-soft/10 h-full flex items-center justify-center">
-          <div className="text-center text-muted-foreground">
-            <p>Carte du réseau de transports</p>
-            <p className="text-sm">Cliquez sur les stations pour plus d'informations</p>
+        <TabsContent value="map" className="p-0 m-0 h-full">
+          <MapPlaceholder />
+        </TabsContent>
+        
+        <TabsContent value="transit" className="p-0 m-0 h-full">
+          <div className="bg-gradient-to-br from-fach-purple-light/10 to-fach-blue-soft/10 h-full flex items-center justify-center">
+            <div className="text-center text-muted-foreground">
+              <p>Carte du réseau de transports</p>
+              <p className="text-sm">Cliquez sur les stations pour plus d'informations</p>
+            </div>
           </div>
-        </div>
-      </TabsContent>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
