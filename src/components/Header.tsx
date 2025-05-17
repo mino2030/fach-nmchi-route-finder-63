@@ -213,18 +213,20 @@ const Header = ({ currentView, setCurrentView }: HeaderProps) => {
             {!isMobile && renderNavLinks()}
           </nav>
           
+          <Button 
+            variant={currentView === 'messages' ? "default" : "outline"} 
+            size="sm"
+            className={currentView === 'messages' ? "bg-fach-purple hover:bg-fach-purple-tertiary" : ""}
+            onClick={() => {
+              setCurrentView('messages');
+              setDrawerOpen(true);
+            }}
+          >
+            <MessageSquare size={18} className="mr-2" />
+            Messages
+          </Button>
+          
           <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-            <DrawerTrigger asChild>
-              <Button 
-                variant={currentView === 'messages' ? "default" : "outline"} 
-                size="sm"
-                className={currentView === 'messages' ? "bg-fach-purple hover:bg-fach-purple-tertiary" : ""}
-                onClick={() => setCurrentView('messages')}
-              >
-                <MessageSquare size={18} className="mr-2" />
-                Messages
-              </Button>
-            </DrawerTrigger>
             <DrawerContent className="max-h-[85vh]">
               <div className="p-4 max-w-md mx-auto w-full">
                 <h3 className="text-lg font-semibold mb-4">Messages</h3>
