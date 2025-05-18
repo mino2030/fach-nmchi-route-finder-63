@@ -1,48 +1,84 @@
 
 import React from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix marker icon issue
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+// Reset the default icon settings
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 
 const MapPlaceholder = () => {
+  const casablancaCenter = [33.5731, -7.5898]; // Coordinates for Casablanca
+  const mainLocations = [
+    { position: [33.5933, -7.6164], name: "Centre Ville", color: "purple" },
+    { position: [33.6067, -7.6315], name: "Mosquée Hassan II", color: "green" },
+    { position: [33.5942, -7.6682], name: "La Corniche", color: "amber" },
+  ];
+
+  const createCustomIcon = (color: string) => {
+    return new L.Icon({
+      iconUrl: markerIcon,
+      shadowUrl: markerShadow,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+      className: `text-${color}-600`,
+    });
+  };
+
   return (
-    <div className="h-full w-full bg-gradient-to-br from-blue-100 to-green-50 flex items-center justify-center relative">
-      <div className="absolute inset-0 opacity-30">
-        <div className="h-full w-full" style={{backgroundImage: "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiNGMUYxRjEiPjwvcmVjdD4KPHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiNGMUYxRjEiPjwvcmVjdD4KPC9zdmc+Cg==')", backgroundSize: "20px 20px"}}></div>
-      </div>
+    <div className="h-full w-full relative">
+      <MapContainer 
+        center={casablancaCenter as [number, number]} 
+        zoom={13} 
+        scrollWheelZoom={false}
+        style={{ height: "100%", width: "100%" }}
+        className="rounded-lg z-10"
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        
+        {/* Main Casablanca marker */}
+        <Marker position={casablancaCenter as [number, number]}>
+          <Popup>
+            <div className="font-semibold">Casablanca, Maroc</div>
+            <div className="text-sm text-muted-foreground">La ville blanche</div>
+          </Popup>
+        </Marker>
+        
+        {/* Additional landmarks */}
+        {mainLocations.map((location, index) => (
+          <Marker 
+            key={index} 
+            position={location.position as [number, number]}
+          >
+            <Popup>
+              <div className="font-semibold">{location.name}</div>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
       
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <h2 className="text-5xl font-bold text-blue-800/80 italic">Casablanca</h2>
-        <div className="mt-2 h-4 w-4 mx-auto rounded-full bg-red-500 animate-ping"></div>
-      </div>
-      
-      <div className="absolute inset-0">
-        {/* Simulated map elements */}
-        <div className="absolute top-[20%] left-[30%] h-1 w-12 bg-blue-500 rotate-45"></div>
-        <div className="absolute top-[25%] left-[35%] h-1 w-16 bg-blue-500 rotate-[120deg]"></div>
-        <div className="absolute top-[45%] left-[40%] h-1 w-20 bg-blue-500"></div>
-        <div className="absolute top-[50%] left-[55%] h-1 w-24 bg-blue-500 rotate-[210deg]"></div>
-        <div className="absolute top-[60%] left-[25%] h-1 w-32 bg-blue-500 rotate-[30deg]"></div>
-        
-        {/* Ocean area */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-blue-200/30"></div>
-        
-        {/* Landmarks */}
-        <div className="absolute top-[30%] left-[40%] flex flex-col items-center">
-          <div className="h-2 w-2 rounded-full bg-purple-600"></div>
-          <div className="text-xs text-purple-800 font-semibold mt-1">Centre Ville</div>
-        </div>
-        
-        <div className="absolute top-[42%] left-[60%] flex flex-col items-center">
-          <div className="h-2 w-2 rounded-full bg-green-600"></div>
-          <div className="text-xs text-green-800 font-semibold mt-1">Mosquée Hassan II</div>
-        </div>
-        
-        <div className="absolute bottom-[40%] left-[45%] flex flex-col items-center">
-          <div className="h-2 w-2 rounded-full bg-amber-600"></div>
-          <div className="text-xs text-amber-800 font-semibold mt-1">La Corniche</div>
-        </div>
+      {/* Overlay with Casablanca text */}
+      <div className="absolute top-4 left-4 bg-white/80 px-3 py-2 rounded-lg shadow-md z-20">
+        <div className="text-sm font-semibold">Casablanca, Maroc</div>
       </div>
       
       {/* Compass */}
-      <div className="absolute top-4 right-4 h-16 w-16 rounded-full bg-white/80 shadow-md flex items-center justify-center">
+      <div className="absolute top-4 right-4 h-16 w-16 rounded-full bg-white/80 shadow-md flex items-center justify-center z-20">
         <div className="relative h-12 w-12">
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 h-6 w-1 bg-red-500"></div>
           <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-6 w-1 bg-gray-500"></div>
@@ -53,8 +89,11 @@ const MapPlaceholder = () => {
         </div>
       </div>
       
-      <div className="absolute bottom-4 left-4 bg-white/80 px-3 py-2 rounded-lg shadow-md">
-        <div className="text-xs text-muted-foreground">Casablanca, Maroc</div>
+      {/* Casablanca text overlay */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+        <span className="text-3xl font-bold text-fach-purple-tertiary/80 bg-white/30 px-4 py-2 rounded-lg backdrop-blur-sm">
+          CASABLANCA
+        </span>
       </div>
     </div>
   );
