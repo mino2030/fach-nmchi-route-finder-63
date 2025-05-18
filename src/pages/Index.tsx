@@ -9,8 +9,9 @@ import MessagesView from "@/components/MessagesView";
 import NewsAndAlerts from "@/components/NewsAndAlerts";
 import NearbyView from "@/components/NearbyView";
 import ChatbotView from "@/components/ChatbotView";
+import RoutePlanner from "@/components/RoutePlanner";
 import { Button } from "@/components/ui/button";
-import { MapPin, ArrowRight } from "lucide-react";
+import { MapPin, ArrowRight, Bus, Car, Train, Plane } from "lucide-react";
 import MapPlaceholder from "@/components/MapPlaceholder";
 
 type View = 'map' | 'community' | 'profile' | 'messages' | 'nearby' | 'chatbot';
@@ -28,7 +29,7 @@ const Index = () => {
       <div className="flex flex-col min-h-screen">
         <Header currentView={currentView} setCurrentView={setCurrentView} />
         
-        <main className="flex-1 relative overflow-hidden bg-gradient-to-br from-fach-purple-light via-white to-fach-blue-soft pb-16">
+        <main className="flex-1 relative overflow-hidden bg-gradient-to-br from-fach-purple via-fach-blue-ocean/30 to-fach-blue-soft pb-16">
           <div className="container mx-auto px-4 pt-12 pb-24 flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-10 md:mb-0 animate-fade-in">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -58,18 +59,22 @@ const Index = () => {
                 </Button>
               </div>
               
-              <div className="mt-8 grid grid-cols-3 gap-4">
-                <div className="bg-white/80 p-4 rounded-lg text-center shadow-sm">
-                  <h3 className="font-semibold">Naviguez</h3>
-                  <p className="text-sm text-muted-foreground">Trouvez votre chemin facilement</p>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <div className="transport-card" onClick={() => handleExplore()}>
+                  <Bus size={24} />
+                  <span>Bus</span>
                 </div>
-                <div className="bg-white/80 p-4 rounded-lg text-center shadow-sm">
-                  <h3 className="font-semibold">Découvrez</h3>
-                  <p className="text-sm text-muted-foreground">Les meilleurs lieux à visiter</p>
+                <div className="transport-card" onClick={() => handleExplore()}>
+                  <Train size={24} />
+                  <span>Train</span>
                 </div>
-                <div className="bg-white/80 p-4 rounded-lg text-center shadow-sm">
-                  <h3 className="font-semibold">Connectez</h3>
-                  <p className="text-sm text-muted-foreground">Avec la communauté locale</p>
+                <div className="transport-card" onClick={() => handleExplore()}>
+                  <Car size={24} />
+                  <span>Taxi</span>
+                </div>
+                <div className="transport-card" onClick={() => handleExplore()}>
+                  <Plane size={24} />
+                  <span>Avion</span>
                 </div>
               </div>
             </div>
@@ -80,8 +85,13 @@ const Index = () => {
                   <div className="bg-fach-purple text-white text-center py-3 font-semibold">
                     Carte de Casablanca
                   </div>
-                  <div className="aspect-square bg-blue-100 relative">
+                  <div className="aspect-square relative">
                     <MapPlaceholder />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-3xl font-bold text-fach-purple-tertiary/80 bg-white/30 px-4 py-2 rounded-lg backdrop-blur-sm">
+                        CASABLANCA
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -89,10 +99,10 @@ const Index = () => {
           </div>
           
           {/* Feature Highlight Section */}
-          <div className="container mx-auto px-4 py-16 bg-gradient-to-r from-white to-white/0 rounded-t-3xl -mt-6 relative z-10">
+          <div className="container mx-auto px-4 py-16 bg-gradient-to-r from-white/90 to-white/40 rounded-t-3xl -mt-6 relative z-10 backdrop-blur-sm">
             <h2 className="text-2xl font-bold mb-8 text-center">Ce que Move Easy vous offre</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="fach-card text-center p-6">
+              <div className="fach-card glass-effect text-center p-6">
                 <div className="rounded-full bg-fach-purple/10 p-4 inline-block mb-4">
                   <MapPin className="h-8 w-8 text-fach-purple" />
                 </div>
@@ -102,17 +112,17 @@ const Index = () => {
                 </p>
               </div>
               
-              <div className="fach-card text-center p-6">
+              <div className="fach-card glass-effect text-center p-6">
                 <div className="rounded-full bg-fach-blue/10 p-4 inline-block mb-4">
-                  <MapPin className="h-8 w-8 text-fach-blue" />
+                  <Bus className="h-8 w-8 text-fach-blue" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Découverte locale</h3>
+                <h3 className="text-xl font-semibold mb-2">Transport multimodal</h3>
                 <p className="text-muted-foreground">
-                  Explorez les meilleurs hôtels, restaurants et activités recommandés par les habitants et d'autres voyageurs.
+                  Combinez bus, train, taxi et plus pour trouver l'itinéraire le plus rapide et économique pour vos déplacements.
                 </p>
               </div>
               
-              <div className="fach-card text-center p-6">
+              <div className="fach-card glass-effect text-center p-6">
                 <div className="rounded-full bg-fach-purple-tertiary/10 p-4 inline-block mb-4">
                   <MapPin className="h-8 w-8 text-fach-purple-tertiary" />
                 </div>

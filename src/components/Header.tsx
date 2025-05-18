@@ -1,20 +1,11 @@
 
 import { useState } from 'react';
-import { MapPin, MessageCircle, User, Menu, X, MessageSquare, Hotel, Activity, Coffee } from 'lucide-react';
+import { MapPin, MessageCircle, User, Menu, X, MessageSquare, Coffee } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { 
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
+import { Drawer, DrawerContent } from '@/components/ui/drawer';
 
 interface NavLinkProps {
   icon: React.ReactNode;
@@ -122,84 +113,41 @@ const Header = ({ currentView, setCurrentView }: HeaderProps) => {
               
               <div className="border-t my-4"></div>
               
-              <NavigationMenu orientation="vertical" className="w-full max-w-none">
-                <NavigationMenuList className="flex-col items-start space-y-2 w-full">
-                  <NavigationMenuItem className="w-full">
-                    <NavigationMenuTrigger className="w-full justify-start">
-                      <Hotel size={16} className="mr-2" />
-                      Hôtels
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[200px] gap-2 p-2">
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Hôtels à proximité
-                            </Button>
-                          </NavigationMenuLink>
-                        </li>
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Meilleurs hôtels
-                            </Button>
-                          </NavigationMenuLink>
-                        </li>
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                  
-                  <NavigationMenuItem className="w-full">
-                    <NavigationMenuTrigger className="w-full justify-start">
-                      <Activity size={16} className="mr-2" />
-                      Activités
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[200px] gap-2 p-2">
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Activités populaires
-                            </Button>
-                          </NavigationMenuLink>
-                        </li>
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Visites guidées
-                            </Button>
-                          </NavigationMenuLink>
-                        </li>
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                  
-                  <NavigationMenuItem className="w-full">
-                    <NavigationMenuTrigger className="w-full justify-start">
-                      <Coffee size={16} className="mr-2" />
-                      Restaurants & Cafés
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[200px] gap-2 p-2">
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Restaurants
-                            </Button>
-                          </NavigationMenuLink>
-                        </li>
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Cafés
-                            </Button>
-                          </NavigationMenuLink>
-                        </li>
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
+              <div className="flex flex-col gap-2">
+                <Button 
+                  variant="ghost" 
+                  className="justify-start gap-2"
+                  onClick={() => {
+                    setCurrentView('map');
+                    setIsOpen(false);
+                  }}
+                >
+                  <MapPin size={18} />
+                  Explorer la carte
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="justify-start gap-2"
+                  onClick={() => {
+                    setCurrentView('nearby');
+                    setIsOpen(false);
+                  }}
+                >
+                  <Coffee size={18} />
+                  À proximité
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="justify-start gap-2"
+                  onClick={() => {
+                    setCurrentView('community');
+                    setIsOpen(false);
+                  }}
+                >
+                  <MessageCircle size={18} />
+                  Communauté
+                </Button>
+              </div>
             </SheetContent>
           </Sheet>
 
