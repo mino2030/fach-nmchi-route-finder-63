@@ -29,7 +29,7 @@ const MapView = () => {
         </TabsContent>
         
         <TabsContent value="routes" className="h-full">
-          <RoutePlanner />
+          <RoutePlanner origin="Casa Voyageurs" destination="Maarif" />
           <div className="bg-white p-4 rounded-lg shadow-md mt-4 max-w-md mx-auto">
             <h3 className="font-medium mb-3">Transport disponible</h3>
             <div className="flex flex-wrap gap-3">

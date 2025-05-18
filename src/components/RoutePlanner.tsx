@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Bus, Route, Clock, Flag, Share as ShareIcon, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -205,6 +206,17 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ origin, destination }) => {
 
   return (
     <div className="space-y-4">
+      <div className="bg-white p-3 rounded-lg shadow-sm mb-4">
+        <div className="flex items-center mb-2 font-medium">
+          <span className="text-sm text-muted-foreground">De:</span>
+          <span className="ml-2 text-fach-purple">{origin}</span>
+        </div>
+        <div className="flex items-center font-medium">
+          <span className="text-sm text-muted-foreground">À:</span>
+          <span className="ml-2 text-fach-blue">{destination}</span>
+        </div>
+      </div>
+      
       {routes.map((route) => (
         <div key={route.id} className="border rounded-lg p-3 hover:bg-muted/50 transition-colors cursor-pointer">
           <div className="flex items-center justify-between mb-2">
