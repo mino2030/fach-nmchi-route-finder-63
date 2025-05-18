@@ -1,26 +1,35 @@
 
-import React, { useState } from 'react';
-import MapPlaceholder from './MapPlaceholder';
+import React, { useState, useEffect } from 'react';
 import RoutePlanner from './RoutePlanner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Map, LocateFixed, Navigation, Clock, Bus, Train, Car } from 'lucide-react';
+import { Navigation, Clock, Bus, Train, Car, MessageSquare } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import TransitMap from './TransitMap';
+import ChatbotView from './ChatbotView';
 
 const MapView = () => {
   const [origin, setOrigin] = useState('Casa Voyageurs');
   const [destination, setDestination] = useState('Maarif');
-  const [showRoutePlan, setShowRoutePlan] = useState(false);
+  const [showRoutePlan, setShowRoutePlan] = useState(true);
+  const [activeTab, setActiveTab] = useState('routes');
+
+  const handleSearch = () => {
+    setShowRoutePlan(true);
+  };
+
+  useEffect(() => {
+    // Automatically show route planner when the component mounts
+    setShowRoutePlan(true);
+  }, []);
 
   return (
     <div className="h-[calc(100vh-10rem)] pb-20">
-      <Tabs defaultValue="map" className="w-full">
+      <Tabs 
+        value={activeTab} 
+        onValueChange={setActiveTab}
+        className="w-full"
+      >
         <TabsList className="w-full max-w-md mx-auto mb-4 grid grid-cols-3">
-          <TabsTrigger value="map" className="flex items-center gap-1">
-            <Map size={16} />
-            <span>Carte</span>
-          </TabsTrigger>
           <TabsTrigger value="routes" className="flex items-center gap-1">
             <Navigation size={16} />
             <span>Itinéraires</span>
@@ -29,13 +38,11 @@ const MapView = () => {
             <Clock size={16} />
             <span>Horaires</span>
           </TabsTrigger>
+          <TabsTrigger value="agent" className="flex items-center gap-1">
+            <MessageSquare size={16} />
+            <span>Agent IA</span>
+          </TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="map" className="h-full">
-          <div className="px-4">
-            <TransitMap />
-          </div>
-        </TabsContent>
         
         <TabsContent value="routes" className="h-full">
           <div className="px-4">
@@ -63,7 +70,7 @@ const MapView = () => {
                 </div>
                 
                 <Button 
-                  onClick={() => setShowRoutePlan(true)}
+                  onClick={handleSearch}
                   className="bg-fach-purple hover:bg-fach-purple-tertiary"
                 >
                   Trouver mon itinéraire
@@ -71,26 +78,8 @@ const MapView = () => {
               </div>
             </div>
 
-            {showRoutePlan ? (
+            {showRoutePlan && (
               <RoutePlanner origin={origin} destination={destination} />
-            ) : (
-              <div className="bg-white p-4 rounded-lg shadow-md mt-4 max-w-md mx-auto">
-                <h3 className="font-medium mb-3">Transport disponible</h3>
-                <div className="flex flex-wrap gap-3">
-                  <div className="transport-option-card">
-                    <Bus size={20} />
-                    <span>Bus</span>
-                  </div>
-                  <div className="transport-option-card">
-                    <Train size={20} />
-                    <span>Train</span>
-                  </div>
-                  <div className="transport-option-card">
-                    <Car size={20} />
-                    <span>Taxi</span>
-                  </div>
-                </div>
-              </div>
             )}
           </div>
         </TabsContent>
@@ -124,6 +113,10 @@ const MapView = () => {
               </div>
             </div>
           </div>
+        </TabsContent>
+
+        <TabsContent value="agent" className="h-full">
+          <ChatbotView />
         </TabsContent>
       </Tabs>
     </div>

@@ -7,7 +7,6 @@ import CommunityView from "@/components/CommunityView";
 import ProfileView from "@/components/ProfileView";
 import MessagesView from "@/components/MessagesView";
 import NewsAndAlerts from "@/components/NewsAndAlerts";
-import NearbyView from "@/components/NearbyView";
 import ChatbotView from "@/components/ChatbotView";
 import RoutePlanner from "@/components/RoutePlanner";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,7 @@ import CasablancaMap from "@/components/CasablancaMap";
 import { Input } from "@/components/ui/input";
 import { Form } from "@/components/ui/form";
 
-type View = 'map' | 'community' | 'profile' | 'messages' | 'nearby' | 'chatbot';
+type View = 'map' | 'community' | 'profile' | 'messages' | 'chatbot';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('map');
@@ -35,6 +34,11 @@ const Index = () => {
     setShowLanding(false);
   };
 
+  const handleViewChange = (view: View) => {
+    setCurrentView(view);
+    setShowLanding(false);
+  };
+
   if (showLanding) {
     return (
       <div className="flex flex-col min-h-screen">
@@ -47,7 +51,7 @@ const Index = () => {
                 Explorez <span className="fach-gradient-text">Casablanca</span> comme jamais auparavant
               </h1>
               <p className="text-lg mb-6 text-muted-foreground">
-                Votre compagnon de voyage intelligent pour découvrir la ville blanche. Navigation, conseils personnalisés et recommandations locales en un seul endroit.
+                Votre compagnon de mobilité intelligente pour découvrir la ville blanche. Navigation, endroits spéciaux et recommandations locales.
               </p>
 
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 mb-6 shadow-md">
@@ -92,25 +96,22 @@ const Index = () => {
                   variant="outline" 
                   className="text-lg px-6 py-6"
                   size="lg"
-                  onClick={() => {
-                    setCurrentView('chatbot');
-                    setShowLanding(false);
-                  }}
+                  onClick={() => handleViewChange('chatbot')}
                 >
-                  Parler au guide IA <ArrowRight className="ml-2 h-5 w-5" />
+                  Agent IA <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
               
               <div className="mt-8 flex flex-wrap gap-4">
-                <div className="transport-card" onClick={() => handleExplore()}>
+                <div className="transport-card" onClick={() => handlePlanRoute()}>
                   <Bus size={24} />
                   <span>Bus</span>
                 </div>
-                <div className="transport-card" onClick={() => handleExplore()}>
+                <div className="transport-card" onClick={() => handlePlanRoute()}>
                   <Train size={24} />
                   <span>Train</span>
                 </div>
-                <div className="transport-card" onClick={() => handleExplore()}>
+                <div className="transport-card" onClick={() => handlePlanRoute()}>
                   <Car size={24} />
                   <span>Taxi</span>
                 </div>
@@ -148,7 +149,7 @@ const Index = () => {
                 <div className="rounded-full bg-fach-purple-tertiary/10 p-4 inline-block mb-4">
                   <MapPin className="h-8 w-8 text-fach-purple-tertiary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Guide IA personnel</h3>
+                <h3 className="text-xl font-semibold mb-2">Agent IA personnel</h3>
                 <p className="text-muted-foreground">
                   Votre assistant virtuel pour répondre à toutes vos questions et vous offrir des recommandations personnalisées.
                 </p>
@@ -203,7 +204,6 @@ const Index = () => {
         {currentView === 'community' && <CommunityView />}
         {currentView === 'profile' && <ProfileView />}
         {currentView === 'messages' && <MessagesView />}
-        {currentView === 'nearby' && <NearbyView />}
         {currentView === 'chatbot' && <ChatbotView />}
       </main>
       
