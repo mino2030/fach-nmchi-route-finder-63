@@ -1,11 +1,18 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import MapPlaceholder from './MapPlaceholder';
 import RoutePlanner from './RoutePlanner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Map, LocateFixed, Navigation, Clock, Bus, Train, Car } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import TransitMap from './TransitMap';
 
 const MapView = () => {
+  const [origin, setOrigin] = useState('Casa Voyageurs');
+  const [destination, setDestination] = useState('Maarif');
+  const [showRoutePlan, setShowRoutePlan] = useState(false);
+
   return (
     <div className="h-[calc(100vh-10rem)] pb-20">
       <Tabs defaultValue="map" className="w-full">
@@ -25,27 +32,66 @@ const MapView = () => {
         </TabsList>
         
         <TabsContent value="map" className="h-full">
-          <MapPlaceholder />
+          <div className="px-4">
+            <TransitMap />
+          </div>
         </TabsContent>
         
         <TabsContent value="routes" className="h-full">
-          <RoutePlanner origin="Casa Voyageurs" destination="Maarif" />
-          <div className="bg-white p-4 rounded-lg shadow-md mt-4 max-w-md mx-auto">
-            <h3 className="font-medium mb-3">Transport disponible</h3>
-            <div className="flex flex-wrap gap-3">
-              <div className="transport-option-card">
-                <Bus size={20} />
-                <span>Bus</span>
-              </div>
-              <div className="transport-option-card">
-                <Train size={20} />
-                <span>Train</span>
-              </div>
-              <div className="transport-option-card">
-                <Car size={20} />
-                <span>Taxi</span>
+          <div className="px-4">
+            <div className="bg-white p-4 rounded-lg shadow-md max-w-lg mx-auto mb-4">
+              <h3 className="font-medium mb-3">Rechercher un itinéraire</h3>
+              <div className="flex flex-col space-y-3">
+                <div>
+                  <label className="text-sm text-muted-foreground">Départ</label>
+                  <Input 
+                    value={origin}
+                    onChange={(e) => setOrigin(e.target.value)}
+                    placeholder="Point de départ"
+                    className="bg-white"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm text-muted-foreground">Destination</label>
+                  <Input 
+                    value={destination}
+                    onChange={(e) => setDestination(e.target.value)}
+                    placeholder="Point d'arrivée"
+                    className="bg-white"
+                  />
+                </div>
+                
+                <Button 
+                  onClick={() => setShowRoutePlan(true)}
+                  className="bg-fach-purple hover:bg-fach-purple-tertiary"
+                >
+                  Trouver mon itinéraire
+                </Button>
               </div>
             </div>
+
+            {showRoutePlan ? (
+              <RoutePlanner origin={origin} destination={destination} />
+            ) : (
+              <div className="bg-white p-4 rounded-lg shadow-md mt-4 max-w-md mx-auto">
+                <h3 className="font-medium mb-3">Transport disponible</h3>
+                <div className="flex flex-wrap gap-3">
+                  <div className="transport-option-card">
+                    <Bus size={20} />
+                    <span>Bus</span>
+                  </div>
+                  <div className="transport-option-card">
+                    <Train size={20} />
+                    <span>Train</span>
+                  </div>
+                  <div className="transport-option-card">
+                    <Car size={20} />
+                    <span>Taxi</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </TabsContent>
         

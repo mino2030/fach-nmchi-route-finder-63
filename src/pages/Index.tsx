@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,16 +11,27 @@ import NearbyView from "@/components/NearbyView";
 import ChatbotView from "@/components/ChatbotView";
 import RoutePlanner from "@/components/RoutePlanner";
 import { Button } from "@/components/ui/button";
-import { MapPin, ArrowRight, Bus, Car, Train, Plane } from "lucide-react";
+import { MapPin, ArrowRight, Bus, Car, Train } from "lucide-react";
 import CasablancaMap from "@/components/CasablancaMap";
+import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 
 type View = 'map' | 'community' | 'profile' | 'messages' | 'nearby' | 'chatbot';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('map');
   const [showLanding, setShowLanding] = useState(true);
+  const [origin, setOrigin] = useState("Casa Voyageurs");
+  const [destination, setDestination] = useState("Maarif");
+  const [showRoutePlanner, setShowRoutePlanner] = useState(false);
 
   const handleExplore = () => {
+    setShowLanding(false);
+  };
+
+  const handlePlanRoute = () => {
+    setShowRoutePlanner(true);
+    setCurrentView('map');
     setShowLanding(false);
   };
 
@@ -37,6 +49,37 @@ const Index = () => {
               <p className="text-lg mb-6 text-muted-foreground">
                 Votre compagnon de voyage intelligent pour découvrir la ville blanche. Navigation, conseils personnalisés et recommandations locales en un seul endroit.
               </p>
+
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 mb-6 shadow-md">
+                <h3 className="text-lg font-medium mb-3 text-fach-purple">Planifiez votre trajet</h3>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm text-muted-foreground">Départ</label>
+                    <Input 
+                      value={origin} 
+                      onChange={(e) => setOrigin(e.target.value)}
+                      placeholder="Point de départ" 
+                      className="bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-muted-foreground">Destination</label>
+                    <Input 
+                      value={destination} 
+                      onChange={(e) => setDestination(e.target.value)}
+                      placeholder="Point d'arrivée" 
+                      className="bg-white"
+                    />
+                  </div>
+                  <Button 
+                    onClick={handlePlanRoute}
+                    className="w-full bg-fach-purple hover:bg-fach-purple-tertiary"
+                  >
+                    Trouver mon itinéraire <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+              
               <div className="flex flex-wrap gap-4">
                 <Button 
                   onClick={handleExplore} 
@@ -70,10 +113,6 @@ const Index = () => {
                 <div className="transport-card" onClick={() => handleExplore()}>
                   <Car size={24} />
                   <span>Taxi</span>
-                </div>
-                <div className="transport-card" onClick={() => handleExplore()}>
-                  <Plane size={24} />
-                  <span>Avion</span>
                 </div>
               </div>
             </div>
@@ -130,7 +169,37 @@ const Index = () => {
       {currentView === 'map' && <NewsAndAlerts />}
       
       <main className="flex-1 pb-16">
-        {currentView === 'map' && <MapView />}
+        {currentView === 'map' && (showRoutePlanner ? (
+          <div className="container mx-auto px-4 py-6">
+            <div className="mb-6">
+              <div className="flex flex-col sm:flex-row gap-4 items-end">
+                <div className="flex-1">
+                  <label className="text-sm text-muted-foreground mb-1 block">De</label>
+                  <Input 
+                    value={origin} 
+                    onChange={(e) => setOrigin(e.target.value)}
+                    className="bg-white"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="text-sm text-muted-foreground mb-1 block">À</label>
+                  <Input 
+                    value={destination} 
+                    onChange={(e) => setDestination(e.target.value)}
+                    className="bg-white"
+                  />
+                </div>
+                <Button 
+                  onClick={() => setShowRoutePlanner(true)}
+                  className="bg-fach-purple hover:bg-fach-purple-tertiary"
+                >
+                  Rechercher
+                </Button>
+              </div>
+            </div>
+            <RoutePlanner origin={origin} destination={destination} />
+          </div>
+        ) : <MapView />)}
         {currentView === 'community' && <CommunityView />}
         {currentView === 'profile' && <ProfileView />}
         {currentView === 'messages' && <MessagesView />}
